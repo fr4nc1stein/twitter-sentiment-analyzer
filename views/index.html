@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+            <v-card
+            color="grey lighten-4"
+            flat
+            height="200px"
+            tile
+          >
+          <v-app-bar color="blue" dark fixed app>
+				<v-toolbar-title style="width: 350px" class="ml-0 pl-3">Tweet Sentiment Visualization</v-toolbar-title>
+                <v-text-field clearable @keyup.enter="search"v-model="query" flat solo-inverted hide-details label="Search topic" class="hidden-sm-and-down">
+                        <v-fade-transition slot="append">
+                            <v-progress-circular v-if="loading" size="24" indeterminate></v-progress-circular>
+                        </v-fade-transition>
+                    </v-text-field>
+                <v-spacer></v-spacer>
+			</v-app-bar>
+          </v-card>
+          <v-content>
+				<v-container>
+					<v-card>
+						<v-card-title>
+							<div class="display-3 text-xs-center">
+                                <% title | capitalize %> Statistics
+							</div>
+						</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text>
+
+							<v-layout row wrap>
+								<v-flex xs12 sm6 md6 xl6 lg6>
+									<pie-chart :chart-data="pieChartData"></pie-chart>
+								</v-flex>
+
+								<v-flex xs12 sm6 md6 xl6 lg6>
+									<bar-chart :chart-data="barChartData"></bar-chart>
+								</v-flex>
+							</v-layout>
+
+							<div class="my-3"></div>
+
+							<v-layout row wrap>
+								<v-flex xs12>
+									<v-list two-line>
+										<v-subheader>
+											<div class="headline">Recent Tweets</div>
+										</v-subheader>
+										<template v-for="(item, index) in orderBy(statuses, 'timestamp', -1)">
+											<v-list-item avatar :key="index">
+												<v-list-item-avatar>
+													<v-tooltip right>
+                                                        <template v-slot:activator="{ on }">
+                                                            <img :src="item.user.profile_image_url_https" >
+                                                        </template>
+														<span v-html="item.user.screen_name"></span>
+													</v-tooltip>
+												</v-list-item-avatar>
+												<v-list-item-content>
+													<v-list-item-title>
+														<v-tooltip top>
+                                                            <template v-slot:activator="{ on }">
+                                                                <span  v-html="item.full_text"></span>
+                                                                <span v-html="item.full_text"></span>
+                                                            </template>
+														</v-tooltip>
+													</v-list-item-title>
+													<v-list-item-subtitle><% item.timestamp | moment %></v-list-item-subtitle>
+												</v-list-item-content>
+												<v-list-item-action>
+													<v-tooltip left>
+                                                        <template v-slot:activator="scopeDataFromSearch">
+															<v-icon v-on="scopeDataFromSearch.on" color="green" v-if="item.sentiment.score > 0">sentiment_satisfied_alt</v-icon>
+															<v-icon v-on="scopeDataFromSearch.on" color="red" v-else-if="item.sentiment.score < 0">sentiment_dissatisfied</v-icon>
+															<v-icon v-on="scopeDataFromSearch.on" color="grey" v-else>face</v-icon>
+                                                        </template>
+														<span v-html="item.sentiment.score"></span>
+													</v-tooltip>
+												</v-list-item-action>
+											</v-list-item>
+										</template>
+									</v-list>
+								</v-flex>
+							</v-layout>
+
+						</v-card-text>
+					</v-card>
+				</v-container>
+			</v-content>
+    </v-app>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue2-filters@0.8.0/dist/vue2-filters.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+  <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+  <script src="/public/app.js"></script>
+</body>
+</html>

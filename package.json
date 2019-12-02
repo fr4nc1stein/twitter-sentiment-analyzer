@@ -1,0 +1,24 @@
+{
+  "name": "tweet-analyzer",
+  "version": "0.0.1",
+  "description": "Twitter Sentiment Analysis",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "twitter",
+    "sentiment",
+    "analysis"
+  ],
+  "author": "Al Francis",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "nunjucks": "^3.1.7",
+    "sentiment": "^5.0.1",
+    "twit": "^2.2.11"
+  }
+}
